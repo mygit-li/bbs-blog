@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <title>后台管理</title>
+    <!-- Bootstrap -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    {% block css %} {% endblock %}
+    <style>
+        #main-nav {
+            margin-left: 1px;
+        }
+
+            #main-nav.nav-tabs.nav-stacked > li > a {
+                padding: 10px 8px;
+                font-size: 12px;
+                font-weight: 600;
+                color: #4A515B;
+                background: #E9E9E9;
+                background: -moz-linear-gradient(top, #FAFAFA 0%, #E9E9E9 100%);
+                background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FAFAFA), color-stop(100%,#E9E9E9));
+                background: -webkit-linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%);
+                background: -o-linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%);
+                background: -ms-linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%);
+                background: linear-gradient(top, #FAFAFA 0%,#E9E9E9 100%);
+                filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#E9E9E9');
+                -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#FAFAFA', endColorstr='#E9E9E9')";
+                border: 1px solid #D5D5D5;
+                border-radius: 4px;
+            }
+
+                #main-nav.nav-tabs.nav-stacked > li > a > span {
+                    color: #4A515B;
+                }
+
+                #main-nav.nav-tabs.nav-stacked > li.active > a, #main-nav.nav-tabs.nav-stacked > li > a:hover {
+                    color: #FFF;
+                    background: #3C4049;
+                    background: -moz-linear-gradient(top, #4A515B 0%, #3C4049 100%);
+                    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4A515B), color-stop(100%,#3C4049));
+                    background: -webkit-linear-gradient(top, #4A515B 0%,#3C4049 100%);
+                    background: -o-linear-gradient(top, #4A515B 0%,#3C4049 100%);
+                    background: -ms-linear-gradient(top, #4A515B 0%,#3C4049 100%);
+                    background: linear-gradient(top, #4A515B 0%,#3C4049 100%);
+                    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#4A515B', endColorstr='#3C4049');
+                    -ms-filter: "progid:DXImageTransform.Microsoft.gradient(startColorstr='#4A515B', endColorstr='#3C4049')";
+                    border-color: #2B2E33;
+                }
+
+                    #main-nav.nav-tabs.nav-stacked > li.active > a, #main-nav.nav-tabs.nav-stacked > li > a:hover > span {
+                        color: #FFF;
+                    }
+
+            #main-nav.nav-tabs.nav-stacked > li {
+                margin-bottom: 4px;
+            }
+
+        /*定义二级菜单样式*/
+        .secondmenu a {
+            font-size: 10px;
+            color: #4A515B;
+            text-align: center;
+        }
+
+        .navbar-static-top {
+            background-color: #212121;
+            margin-bottom: 5px;
+        }
+
+        .navbar-brand {
+            background: url('') no-repeat 10px 8px;
+            display: inline-block;
+            vertical-align: middle;
+            padding-left: 50px;
+            color: #fff;
+        }
+    </style>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+    <!--导航栏-->
+    <nav class="navbar navbar-inverse" role="navigation" style="background-color: #222">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="#">后台管理</a>
+            </div>
+        <div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="/mainbbs/bbs_index.html"><span class="glyphicon"></span> 论坛主页</a></li>
+                <li><a href="/mainblog/blog_{{ blog_site }}.html"><span class="glyphicon"></span> 博客主页</a></li>
+                <li><a href="/mainadmin/admin_index.html"><span class="glyphicon"></span> 后台主页</a></li>
+            </ul>
+        </div>
+        </div>
+    </nav>
+    <!--左侧菜单栏-->
+    <div class="row">
+        <div class="col-md-2">
+            <ul id="main-nav" class="nav nav-tabs nav-stacked" style="">
+                <li>
+                    <a href="edit_article_0_0.html">
+                        <i class="glyphicon glyphicon-th-large"></i>
+                        文章管理
+                    </a>
+                </li>
+                <li>
+                    <a href="edit_category.html">
+                        <i class="glyphicon glyphicon-cog"></i>
+                        分类管理
+                    </a>
+                </li>
+                <li>
+                    <a href="edit_tag.html">
+                        <i class="glyphicon glyphicon-credit-card"></i>
+                        标签管理
+                    </a>
+                </li>
+
+                <li>
+                    <a href="edit_base_info.html">
+                        <i class="glyphicon glyphicon-globe"></i>
+                        个人信息
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-10">
+            {% block content %} {% endblock %}
+        </div>
+    </div>
+    
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="/static/js/jquery-2.1.4.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/static/js/bootstrap.min.js"></script>
+    {% block js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,108 @@
+{% extends 'admin_layout.html' %}
+{% block css %}
+
+{% endblock %}
+{% block content %}
+    <ol class="breadcrumb">
+        <li><a href="#">分类管理</a></li>
+        <li class="active">分类列表</li>
+    </ol>
+    <div>
+        <div class="row" style="padding: 20px 5px;">
+            <form class="form-horizontal">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label class="col-xs-1 control-label">分类名称</label>
+
+                        <div class="col-xs-3">
+                            <input type="text" class="form-control" name="title" placeholder="请输入分类名称">
+                        </div>
+                        <div class="col-xs-3">
+                            <input type="button" class="btn btn-primary" value="添 加" onclick="DoSubmit();">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div style="height: 35px;background-color: #f5f5f5;line-height: 35px;padding: 0 15px;">
+            <i class="fa fa-table" aria-hidden="true"></i>
+            标签列表
+        </div>
+
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>分类</th>
+                    <th>文章个数</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in ret %}
+                    <tr>
+                        <td class="hide nid">{{ item.nid }}</td>
+                        <td id="title">{{ item.title }}</td>
+                        <td>{{ item.blog_id }}</td>
+                        <td>
+                            <a class="btn btn-danger btn-xs">
+                                删除
+                            </a>
+                            |
+                            <a class="btn btn-primary btn-xs" href="update_category{{ item.nid }}.html">
+                                编辑
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        function DoSubmit() {
+            var input_dic = {};
+            $('input').each(function () {
+                var v = $(this).val();
+                var n = $(this).attr('name');
+                input_dic[n] = v;
+            });
+            $.ajax({
+                url:'/mainadmin/edit_category.html',
+                type:'POST',
+                data:input_dic,
+                dataType: 'json',
+                success: function (msg) {
+                    if(msg.status){
+                        location.href = '/mainadmin/edit_category.html'
+                    }else{
+                        alert(msg.message);
+                    }
+
+                }
+            })
+        }
+        $('td a.btn.btn-danger.btn-xs').click(function () {
+            var c_id = $(this).parent().siblings('.hide.nid').text();
+            var c_dict = {};
+            c_dict['nid'] = c_id;
+            console.log(c_dict);
+            $.ajax({
+            url: '/mainadmin/edit_category.html',
+            type: 'POST',
+            data: c_dict,
+            dataType: 'json',
+            success: function (dmsg) {
+                if(dmsg) {
+                    location.href = '/mainadmin/edit_category.html'
+                }
+            }
+          })
+        })
+    </script>
+{% endblock %}

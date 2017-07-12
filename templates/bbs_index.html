@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" href="/static/plugins/bootstrap/css/bootstrap.css"/>
+    <link rel="stylesheet" href="/static/plugins/font-awesome/css/font-awesome.css"/>
+    <link rel="stylesheet" href="/static/css/edmure.css"/>
+    <link rel="stylesheet" href="/static/css/commons.css"/>
+    <link rel="stylesheet" href="/static/css/row-avatar.css"/>
+
+    <script type="text/javascript" src="/static/js/jquery-2.1.4.min.js"></script>
+    <script type="text/javascript" src="/static/plugins/bootstrap/js/bootstrap.js"></script>
+</head>
+<body>
+{% include 'include/header.html' %}
+
+    <div class="container">
+        <div>
+            <div class="col-md-8">
+                <div class="article-list">
+                    {% for row in article_list %}
+                        <div class="article-item clearfix">
+                            <h3><a href="/mainblog/{{ row.5 }}/{{ row.7 }}.html">{{ row.0 }}</a></h3>
+                            <div class="clearfix">
+                                <a class="avatar left" href="#">
+                                    <img src="/static/imgs/avatar/{{ row.5 }}.png">
+                                </a>
+                                {{ row.1 }}
+                            </div>
+                            <div class="footers">
+                                <a href="/mainblog/blog_{{ row.5 }}.html">
+                                    <i class="fa fa-user-o" aria-hidden="true"></i>
+                                    <span>{{ row.4 }}</span>
+                                </a>
+                                <span>{{ row.8 }}</span>
+                                {% if request.session.user_info.nid %}
+                                    <a href="/mainblog/{{ row.10 }}/{{ row.7 }}.html" class="ele">
+                                        <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                                        <span>{{ row.3 }}</span>
+                                    </a>
+                                {% else %}
+                                    <span>
+                                        <i class="fa fa-commenting-o" aria-hidden="true"></i>
+                                        <span>{{ row.3 }}</span>
+                                    </span>
+                                {% endif %}
+                                {% if request.session.user_info.nid %}
+                                    <a name="up" class="{{ row.9 }} {{ row.7 }}">
+                                        <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                                        <span>{{ row.2 }}</span>
+                                    </a>
+                                {% else %}
+                                    <span>
+                                        <i class="fa fa-thumbs-o-up" aria-hidden="true"></i>
+                                        <span>{{ row.2 }}</span>
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+
+                <div class="clearfix">
+                    <ul class="pagination">
+                        {{ page_str }}
+                    </ul>
+                </div>
+
+            </div>
+            <div class="col-md-4">
+                <div class="panel panel-default hot-recommend">
+                    <div class="panel-heading">吐血推荐</div>
+                    <div class="panel-body">
+                        {% for item in tui_jian %}
+                            <li><a href="/mainblog/{{ item.2 }}/{{ item.0 }}.html">{{ item.1 }}</a></li>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="panel panel-default hot-comment">
+                    <div class="panel-heading">评论最多</div>
+                    <div class="panel-body">
+                        {% for item in ping_lun %}
+                            <li><a href="/mainblog/{{ item.2 }}/{{ item.0 }}.html">{{ item.1 }}</a></li>
+                        {% endfor %}
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <script src="/static/js/jquery-2.1.4.min.js"></script>
+    <script>
+
+        $("a[name='up']").click(function(){
+            var v = $(this).attr('class');
+            var input_dic = {};
+            input_dic['class'] = v;
+            console.log(input_dic);
+            $.ajax({
+            url:'/mainbbs/bbs_index.html',
+            type:'POST',
+            data:input_dic,
+            dataType: 'json',
+            success: function (msg) {
+                if(msg.status){
+                    location.href = '/mainbbs/bbs_index.html'
+                }else{
+                    alert(msg.message);
+                }
+            }
+            })
+        });
+
+    </script>
+</body>
+</html>

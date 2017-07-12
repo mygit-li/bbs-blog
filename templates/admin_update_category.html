@@ -1,0 +1,83 @@
+{% extends 'admin_layout.html' %}
+{% block css %}
+
+{% endblock %}
+{% block content %}
+    <ol class="breadcrumb">
+        <li><a href="#">分类管理</a></li>
+        <li class="active">分类列表</li>
+    </ol>
+    <div>
+        <div class="row" style="padding: 20px 5px;">
+            <form class="form-horizontal">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label class="col-xs-1 control-label">分类名称</label>
+
+                        <div class="col-xs-3">
+                            <input type="text" class="form-control" id="nickname" placeholder="请输入分类名称">
+                        </div>
+                        <div class="col-xs-3">
+                            <input type="submit" class="btn btn-primary" value="添 加">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div style="height: 35px;background-color: #f5f5f5;line-height: 35px;padding: 0 15px;">
+            <i class="fa fa-table" aria-hidden="true"></i>
+            标签列表
+        </div>
+
+        <form>
+            <p>
+                <span class="hide nid"><input type="text" name="nid" value="{{ item.0.0 }}"></span>
+                <span><input type="text" name="title" value="{{ item.0.1 }}"></span></p>
+                <span><input class="btn btn-primary btn-xs" type="button" value="保存"
+                        onclick="DoSubmit();"></span>
+            </p>
+        </form>
+
+        <div class="clearfix">
+            <ul class="pagination right" style="margin-top: 0">
+                <li><a href="#">&laquo;</a></li>
+                <li><a href="#">1</a></li>
+                <li><a href="#">2</a></li>
+                <li><a href="#">3</a></li>
+                <li><a href="#">4</a></li>
+                <li><a href="#">5</a></li>
+                <li><a href="#">&raquo;</a></li>
+            </ul>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        function DoSubmit() {
+            var input_dic = {};
+            $('input').each(function () {
+                var v = $(this).val();
+                var n = $(this).attr('name');
+                input_dic[n] = v;
+            });
+            $.ajax({
+                url:'/mainadmin/update_category'+input_dic['nid']+'.html',
+                type:'POST',
+                data:input_dic,
+                dataType: 'json',
+                success: function (msg) {
+                    if(msg.status){
+                        location.href = '/mainadmin/edit_category.html'
+                    }else{
+                        alert(msg.message);
+                    }
+
+                }
+            })
+        }
+    </script>
+{% endblock %}

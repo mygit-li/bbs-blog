@@ -1,0 +1,138 @@
+{% extends 'admin_layout.html' %}
+{% block css %}
+
+{% endblock %}
+{% block content %}
+    <ol class="breadcrumb">
+        <li><a href="#">文章管理</a></li>
+        <li class="active">文章列表</li>
+    </ol>
+    <div style="border: 1px dashed #dddddd;padding: 8px;border-left: 3px solid #337ab7;">
+        <i class="fa fa-search"></i> 搜索条件
+    </div>
+    <div>
+        <div style="padding: 16px">
+            {% if choice_dict.category_id == 0 %}
+                <span><a style="background-color: #660000"
+                         href="edit_article_0_{{ choice_dict.tag_id }}.html">全部分类</a></span>
+            {% else %}
+                <span><a href="edit_article_0_{{ choice_dict.tag_id }}.html">全部分类</a></span>
+            {% endif %}
+            {% for item in category %}
+                {% if choice_dict.category_id == item.nid %}  <!-- 此判断是为选中的条件加样式 -->
+                    <span style="margin-left: 30px">
+                        <a style="background-color: #660000"
+                           href="edit_article_{{ item.nid }}_{{ choice_dict.tag_id }}.html">{{ item.title }}</a>
+                    </span>
+                {% else %}
+                    <span style="margin-left: 30px">
+                        <a href="edit_article_{{ item.nid }}_{{ choice_dict.tag_id }}.html">{{ item.title }}</a>
+                    </span>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div style="padding: 16px">
+            {% if choice_dict.tag_id == 0 %}
+                <span><a style="background-color: #660000"
+                         href="edit_article_{{ choice_dict.category_id }}_0.html">全部分类</a></span>
+            {% else %}
+                <span><a href="edit_article_{{ choice_dict.category_id }}_0.html">全部分类</a></span>
+            {% endif %}
+            {% for item in tag %}
+                {% if choice_dict.tag_id == item.nid %} <!-- 此判断是为选中的条件加样式 -->
+                    <span style="margin-left: 30px">
+                        <a style="background-color: #660000"
+                           href="edit_article_{{ choice_dict.category_id }}_{{ item.nid }}.html">{{ item.title }}</a>
+                    </span>
+                {% else %}
+                    <span style="margin-left: 30px">
+                        <a href="edit_article_{{ choice_dict.category_id }}_{{ item.nid }}.html">{{ item.title }}</a>
+                    </span>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="clearfix" style="height: 36px;line-height: 35px;padding: 0 15px;border-top: 1px solid #dddddd;background-color: #f1f0f0">
+        <i class="fa fa-table" aria-hidden="true"></i>
+        搜索文章({{ num }}篇)
+        <a target="_blank" href="/mainadmin/add_article.html" class="right"
+           style="display: inline-block;padding:0 60px;background-color: #428bca;color: #ffffff;float: right">
+            <i class="fa fa-plus-circle" aria-hidden="true"></i>
+            创建新文章
+        </a>
+    </div>
+
+    <div style="height: 35px;background-color: #f5f5f5;line-height: 35px;padding: 0 15px;">
+        <i class="fa fa-table" aria-hidden="true"></i>
+        文章列表
+    </div>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>文章标题</th>
+                <th>文章简介</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in contacts %}
+                <tr>
+                    <td class="hide nid">{{ item.nid }}</td>
+                    <td id="title"><a href="/mainblog/{{ blog_site }}/{{ item.nid }}.html">{{ item.title }}</a></td>
+                    <td id="title">{{ item.summary }}</td>
+                    <td>
+                        <a class="btn btn-danger btn-xs">
+                            删除
+                        </a>
+                        |
+                        <a class="btn btn-primary btn-xs" href="update_article{{ item.nid }}.html">
+                            编辑
+                        </a>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <div class="pagination">
+        <span style="margin-left: 900px">
+            {% if contacts.has_previous %}
+                <a href="/mainadmin/edit_article_0_0.html?page={{ contacts.previous_page_number }}">前一页</a>
+            {% endif %}
+
+            <span class="current">
+                第 {{ contacts.number }} 页|共 {{ contacts.paginator.num_pages }}页.
+            </span>
+
+            {% if contacts.has_next %}
+                <a href="/mainadmin/edit_article_0_0.html?page={{ contacts.next_page_number }}">后一页</a>
+            {% endif %}
+        </span>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+
+        $('td a.btn.btn-danger.btn-xs').click(function () {
+            var c_id = $(this).parent().siblings('.hide.nid').text();
+            var c_dict = {};
+            c_dict['nid'] = c_id;
+            console.log(c_dict);
+            $.ajax({
+            url: '/mainadmin/edit_article_0_0.html',
+            type: 'POST',
+            data: c_dict,
+            dataType: 'json',
+            success: function (dmsg) {
+                if(dmsg) {
+                    location.href = '/mainadmin/edit_article_0_0.html'
+                }
+            }
+          })
+        })
+
+    </script>
+{% endblock %}

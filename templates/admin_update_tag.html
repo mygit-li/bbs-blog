@@ -1,0 +1,70 @@
+{% extends 'admin_layout.html' %}
+{% block css %}
+
+{% endblock %}
+{% block content %}
+    <ol class="breadcrumb">
+        <li><a href="#">标签管理</a></li>
+        <li class="active">标签列表</li>
+    </ol>
+    <div>
+        <div class="row" style="padding: 20px 5px;">
+            <form class="form-horizontal">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label class="col-xs-1 control-label">标签名</label>
+                        <div class="col-xs-3">
+                            <input type="text" class="form-control" name="title" placeholder="请输入标签名">
+                        </div>
+                        <div class="col-xs-3">
+                            <input type="button" class="btn btn-primary" value="添 加" onclick="DoSubmit();">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div style="height: 35px;background-color: #f5f5f5;line-height: 35px;padding: 0 15px;">
+            <i class="fa fa-table" aria-hidden="true"></i>
+            标签名称
+        </div>
+        <form>
+            <p>
+                <span class="hide nid"><input type="text" name="nid" value="{{ item.0.0 }}"></span>
+                <span><input type="text" name="title" value="{{ item.0.1 }}"></span></p>
+                <span><input class="btn btn-primary btn-xs" type="button" value="保存"
+                        onclick="DoSubmit();"></span>
+            </p>
+        </form>
+    </div>
+
+
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        function DoSubmit() {
+            var input_dic = {};
+            $('input').each(function () {
+                var v = $(this).val();
+                var n = $(this).attr('name');
+                input_dic[n] = v;
+            });
+            $.ajax({
+                url:'/mainadmin/update_tag'+input_dic['nid']+'.html',
+                type:'POST',
+                data:input_dic,
+                dataType: 'json',
+                success: function (msg) {
+                    if(msg.status){
+                        location.href = '/mainadmin/edit_tag.html'
+                    }else{
+                        alert(msg.message);
+                    }
+
+                }
+            })
+        }
+
+    </script>
+{% endblock %}

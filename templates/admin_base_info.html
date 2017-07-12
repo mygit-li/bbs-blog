@@ -1,0 +1,221 @@
+{% extends 'admin_layout.html' %}
+{% block css %}
+    <style>
+        .form-horizontal .control-label {
+            padding-top: 7px;
+            margin-bottom: 0;
+            text-align: right;
+        }
+
+        .avatar-container {
+            height: 200px;
+            width: 200px;
+            padding: 2px;
+            border: 1px solid #dddddd;
+            position: relative;
+        }
+
+        .avatar-container img {
+            height: 100%;
+            width: 100%;
+            border: 0;
+            overflow: hidden;
+        }
+
+        .avatar-container .text {
+            text-align: center;
+        }
+
+        .avatar-container .img-file {
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            opacity: 0;
+            position: absolute;
+            z-index: 102;
+        }
+    </style>
+{% endblock %}
+{% block content %}
+    <ol class="breadcrumb">
+        <li><a href="#">用户管理</a></li>
+        <li class="active">用户信息</li>
+    </ol>
+    <div>
+
+        <div class="row" style="position: relative;">
+            <form class="form-horizontal">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label class="col-xs-2 control-label">用户名</label>
+
+                        <div class="col-xs-5">
+                            <p class="form-control-static">{{ request.session.user_info.username }}</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-2 control-label">邮箱</label>
+
+                        <div class="col-xs-5">
+                            <p class="form-control-static">{{ request.session.user_info.email }}</p>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="nickname" class="col-xs-2 control-label">昵称</label>
+                        <input type="text" class="hide" name="user_id" value="{{ request.session.user_info.nid }}">
+                        <div class="col-xs-5">
+                            {% if request.session.user_info.nickname %}
+                                <p class="form-control-static" name="nickname">{{ request.session.user_info.nickname }}</p>
+                            {% else %}
+                                <input type="text" class="form-control" name="nickname"
+                                       placeholder="mydog" />
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="blogUrl" class="col-xs-2 control-label">博客地址</label>
+                        <div class="col-xs-5">
+                            {% if request.session.user_info.blog__site %}
+                                <p class="form-control-static" name="nickname">{{ request.session.user_info.blog__site }}</p>
+                            {% else %}
+                                <input type="text" class="form-control" name="site"
+                                       placeholder="如：wupeiqi,则个人博客为http://www.xxx.com/wupeiqi.html"/>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="blogTheme" class="col-xs-2 control-label">性别</label>
+
+                        <div class="col-xs-5">
+                            {% if request.session.user_info.gender %}
+                                <p class="form-control-static" name="nickname">{{ request.session.user_info.gender }}</p>
+                            {% else %}
+                                <input type="text" class="form-control" name="gender"
+                                       placeholder="如：男"/>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-xs-offset-2 col-xs-10">
+                            <button type="button" class="btn btn-primary" onclick="DoSubmit();">保 存</button>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+            <div style="position: absolute;" class="col-xs-offset-7 col-xs-5">
+                <div class="avatar-container">
+                    <iframe style="display: none;" id="upload_iframe" name="upload_iframe"></iframe>
+                    <form method="POST" action="/mainadmin/upload_avatar.html" enctype="multipart/form-data"
+                          target="upload_iframe">
+                        {% csrf_token %}
+                        {% if request.session.user_info.avatar %}
+                            <img id="previewImg" style="width:200px;height:200px;"
+                                 src="/static/imgs/avatar/{{ request.session.user_info.username }}.png"/>
+                        {% else %}
+                            <img id="previewImg" style="width:200px;height:200px;"
+                                 src="/static/imgs/avatar/default.png"/>
+                        {% endif %}
+                        <div class="text">点击图片更换</div>
+                        <input id="avatarImg" name="avatar_img" type="file" class="img-file"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        function DoSubmit() {
+            var input_dic = {};
+            $('input').each(function () {
+                var v = $(this).val();
+                var n = $(this).attr('name');
+                input_dic[n] = v;
+            });
+            $.ajax({
+                url:'/mainadmin/edit_base_info.html',
+                type:'POST',
+                data:input_dic,
+                dataType: 'json',
+                success: function (msg) {
+                    if(msg.status){
+                        location.href = '/mainadmin/edit_base_info.html'
+                    }else{
+                        $('.newaddspan').each(function () {
+                            $(this).remove();
+                        });
+                        $.each(msg.message, function (k,v) {
+                            var tag = document.createElement('span');
+                            tag.className = 'newaddspan';
+                            tag.innerText = v[0].message;
+                            $('input[name="' + k + '"]').after(tag);
+                        })
+                    }
+
+                }
+            })
+        }
+
+
+
+        $(function () {
+            bindChangeAvatar4();
+        });
+
+        function bindChangeAvatar1() {
+            $('#avatarImg').change(function () {
+                var file_obj = $(this)[0].files[0];
+                $('#prevViewImg')[0].src = window.URL.createObjectURL(file_obj)
+            })
+        }
+
+        function bindChangeAvatar2() {
+            $('#avatarImg').change(function () {
+                var file_obj = $(this)[0].files[0];
+                var reader = new FileReader();
+                reader.readAsDataURL(file_obj);
+                reader.onload = function (e) {
+                    $('#previewImg')[0].src = this.result;
+                };
+            })
+        }
+
+        function bindChangeAvatar3() {
+            $('#avatarImg').change(function () {
+                var file_obj = $(this)[0].files[0];
+                var form = new FormData();
+                form.add('img_upload', file_obj);
+
+                $.ajax({
+                    url: '',
+                    data: form,
+                    processData: false,  // tell jQuery not to process the data
+                    contentType: false,  // tell jQuery not to set contentType
+                    success: function (arg) {
+
+                    }
+                })
+            })
+        }
+
+        function bindChangeAvatar4() {
+            $('#avatarImg').change(function () {
+                $(this).parent().submit();
+
+                $('#upload_iframe').load(function () {
+                    var iframeContents = this.contentWindow.document.body.innerText;
+                    iframeContents = JSON.parse(iframeContents);
+                    if (iframeContents.status) {
+                        $('#previewImg').attr('src', '/' + iframeContents.data);
+                    }
+                })
+
+            })
+        }
+
+    </script>
+{% endblock %}
